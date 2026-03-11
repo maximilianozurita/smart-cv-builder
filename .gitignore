@@ -4,10 +4,6 @@
 # Personal data (keep locally, do not commit)
 data/candidate_data.json
 
-templates/cv_template.docx
-
-# Generated output
-output/
 
 # Python
 __pycache__/
