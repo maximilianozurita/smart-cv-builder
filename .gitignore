@@ -3,7 +3,11 @@
 
 # Personal data (keep locally, do not commit)
 data/candidate_data.json
+job_description.txt
+templates/cv_template.docx
 
+# Generated output
+output/
 
 # Python
 __pycache__/
