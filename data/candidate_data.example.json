@@ -1,0 +1,83 @@
+{
+	"personal_info": {
+		"full_name": "Jane Doe",
+		"location": "Buenos Aires, Argentina",
+		"email": "jane.doe@email.com",
+		"phone": "+54 11 1234 5678",
+		"linkedin": "linkedin.com/in/janedoe"
+	},
+	"languages": [
+		{ "language": "English", "level": "B2" },
+		{ "language": "Spanish", "level": "Native" }
+	],
+	"education": [
+		{
+			"institution": "Universidad de Buenos Aires",
+			"degree": "Computer Science",
+			"end_date": "2021"
+		}
+	],
+	"summary_base": "Software engineer with experience in backend development and data processing. Passionate about building scalable systems and automating workflows.",
+	"technical_skills": {
+		"programming_languages": ["Python", "JavaScript", "Go", "SQL"],
+		"backend": ["Node.js", "Express.js", "API REST", "FastAPI"],
+		"databases": ["PostgreSQL", "MySQL", "MongoDB"],
+		"tools": ["Linux", "Git", "GitHub", "Docker", "Postman"],
+		"methodologies": ["Scrum", "Kanban"]
+	},
+	"experience": [
+		{
+			"id": "exp1",
+			"company": "Acme Corp",
+			"role": "Backend Engineer",
+			"start_date": "03/2021",
+			"end_date": "Present",
+			"description": "Backend development for a SaaS platform",
+			"responsibilities": [
+				"Designed and implemented REST APIs consumed by web and mobile clients.",
+				"Built ETL pipelines to process and load large datasets into the data warehouse.",
+				"Optimized SQL queries reducing average response time by 40%.",
+				"Participated in code reviews and maintained high test coverage."
+			],
+			"technologies": ["Python", "Go", "PostgreSQL", "Docker", "Git"],
+			"achievements": [
+				"Reduced data processing time by 60% through pipeline optimization.",
+				"Led migration from monolith to microservices for the reporting module."
+			]
+		},
+		{
+			"id": "exp2",
+			"company": "Startup XYZ",
+			"role": "Junior Developer",
+			"start_date": "01/2020",
+			"end_date": "02/2021",
+			"description": "Full-stack development for an e-commerce platform",
+			"responsibilities": [
+				"Developed frontend components using React and integrated them with backend APIs.",
+				"Implemented automated tests using Jest and Pytest.",
+				"Maintained CI/CD pipelines using GitHub Actions."
+			],
+			"technologies": ["JavaScript", "Python", "MySQL", "GitHub Actions"],
+			"achievements": [
+				"Delivered 3 major features ahead of schedule.",
+				"Improved test coverage from 40% to 85%."
+			]
+		}
+	],
+	"certifications": [
+		{
+			"name": "AWS Certified Developer",
+			"issuer": "Amazon Web Services",
+			"credential_url": "https://example.com/credential"
+		}
+	],
+	"soft_skills": [
+		"Problem solving",
+		"Teamwork",
+		"Adaptability",
+		"Continuous improvement"
+	],
+	"metadata": {
+		"last_updated": "2025-01-01"
+	}
+}

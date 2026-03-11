@@ -1,0 +1,25 @@
+# Environment / secrets
+.env
+
+# Personal data (keep locally, do not commit)
+data/candidate_data.json
+
+templates/cv_template.docx
+
+# Generated output
+output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+*.egg-info/
+
+# macOS / tooling
+.DS_Store
+.claude
+CLAUDE.md
