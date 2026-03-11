@@ -1,0 +1,86 @@
+{
+	"backend_engineer": {
+		"display_name": "Backend Engineer",
+		"focus_areas": [
+			"API design and development",
+			"Scalability and performance",
+			"Database optimization",
+			"Microservices architecture"
+		],
+		"prioritize_skills": ["Python", "REST APIs", "SQL", "Docker", "Microservices"],
+		"bullet_style": "action verb + technical context + quantifiable impact",
+		"experience_selection_criteria": "Select the 2 experiences with the most relevant backend/API/database work, prioritizing recent roles"
+	},
+	"data_engineer": {
+		"display_name": "Data Engineer",
+		"focus_areas": [
+			"Data pipelines and ETL",
+			"Data modeling",
+			"Big data technologies",
+			"Cloud data infrastructure"
+		],
+		"prioritize_skills": ["Python", "SQL", "Spark", "Airflow", "dbt", "AWS"],
+		"bullet_style": "action verb + data volume/scale context + business impact",
+		"experience_selection_criteria": "Select experiences that involve data processing, pipelines, or analytics infrastructure"
+	},
+	"fullstack_engineer": {
+		"display_name": "Fullstack Engineer",
+		"focus_areas": [
+			"Frontend and backend development",
+			"RESTful APIs",
+			"UI/UX implementation",
+			"Deployment and CI/CD"
+		],
+		"prioritize_skills": ["Python", "JavaScript", "React", "SQL", "REST APIs", "Docker"],
+		"bullet_style": "action verb + feature/product context + user or business metric",
+		"experience_selection_criteria": "Select experiences showing both frontend and backend contributions; prioritize product impact"
+	},
+	"data_analyst": {
+		"display_name": "Data Analyst",
+		"focus_areas": [
+			"Data analysis and reporting",
+			"SQL queries and database exploration",
+			"Data visualization and dashboards",
+			"Statistical analysis and insights"
+		],
+		"prioritize_skills": ["SQL", "Python", "Excel", "Power BI", "Tableau", "pandas", "Statistical Analysis"],
+		"bullet_style": "action verb + analysis scope or dataset size + business insight or decision enabled",
+		"experience_selection_criteria": "Select experiences involving data analysis, reporting, BI dashboards, or deriving insights from data; prioritize roles with direct business impact"
+	},
+	"software_engineer": {
+		"display_name": "Software Engineer",
+		"focus_areas": [
+			"Software design and architecture",
+			"Code quality, testing, and CI/CD",
+			"System integration and APIs",
+			"Performance and reliability"
+		],
+		"prioritize_skills": ["Python", "OOP", "Design Patterns", "Testing", "Git", "CI/CD", "REST APIs"],
+		"bullet_style": "action verb + technical approach + quality, efficiency, or reliability outcome",
+		"experience_selection_criteria": "Select the 2 most representative experiences of solid software engineering practice across any domain; value breadth, design decisions, and measurable outcomes"
+	},
+	"ia_developer": {
+		"display_name": "AI Developer",
+		"focus_areas": [
+			"Machine learning and model development",
+			"AI system integration and LLMs",
+			"Data preprocessing and feature engineering",
+			"Model deployment and MLOps"
+		],
+		"prioritize_skills": ["Python", "PyTorch", "TensorFlow", "scikit-learn", "LLMs", "OpenAI API", "MLflow", "Docker"],
+		"bullet_style": "action verb + AI/ML technique or model type + performance metric or business impact",
+		"experience_selection_criteria": "Select experiences involving ML models, AI applications, LLM integrations, or data science workflows; prioritize roles with measurable model or product outcomes"
+	},
+	"automatization_developer": {
+		"display_name": "Automation Developer",
+		"focus_areas": [
+			"Process automation and scripting",
+			"Workflow orchestration and scheduling",
+			"API integrations and data connectors",
+			"Test automation and CI/CD pipelines"
+		],
+		"prioritize_skills": ["Python", "Bash", "Airflow", "Celery", "REST APIs", "Docker", "CI/CD", "Selenium", "Playwright"],
+		"bullet_style": "action verb + automation scope + time saved, error reduction, or reliability gained",
+		"experience_selection_criteria": "Select experiences focused on automating manual processes, orchestrating workflows, or building integrations; prioritize roles with clear efficiency or reliability improvements"
+	}
+}
