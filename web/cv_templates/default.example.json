@@ -1,0 +1,81 @@
+{
+  "id": "default",
+  "name": "Default",
+  "theme": "classic",
+  "page": {
+    "margin_top_mm": 16.0,
+    "margin_bottom_mm": 15.0,
+    "margin_left_mm": 1.0,
+    "margin_right_mm": 18.0,
+    "font_family": "Arial",
+    "base_font_size_pt": 10.0
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "header",
+      "order": 0,
+      "visible": true,
+      "config": {
+        "name_font_size_pt": 22
+      }
+    },
+    {
+      "id": "profile",
+      "type": "text_block",
+      "order": 1,
+      "visible": true,
+      "config": {
+        "section_title": "Profile"
+      }
+    },
+    {
+      "id": "experience_1",
+      "type": "experience_block",
+      "order": 2,
+      "visible": true,
+      "config": {
+        "section_title": "Experience",
+        "show_section_title": true,
+        "experience_index": 0
+      }
+    },
+    {
+      "id": "experience_2",
+      "type": "experience_block",
+      "order": 3,
+      "visible": true,
+      "config": {
+        "show_section_title": false,
+        "experience_index": 1
+      }
+    },
+    {
+      "id": "education",
+      "type": "education_block",
+      "order": 4,
+      "visible": true,
+      "config": {
+        "section_title": "Education"
+      }
+    },
+    {
+      "id": "skills",
+      "type": "skills_block",
+      "order": 5,
+      "visible": true,
+      "config": {
+        "section_title": "Technical Skills"
+      }
+    },
+    {
+      "id": "languages",
+      "type": "text_block",
+      "order": 6,
+      "visible": true,
+      "config": {
+        "section_title": "Languages"
+      }
+    }
+  ]
+}

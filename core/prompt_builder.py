@@ -32,7 +32,7 @@ STRICT RULES:
 - Return ONLY valid JSON. No markdown, no code fences, no explanation text.
 - Do NOT invent data, technologies, or achievements not present in the candidate's information.
 - Select EXACTLY 2 experiences from the candidate's history, choosing those most relevant to the job description.
-- Each experience must have between 1 and 6 bullets.
+- Each experience must have between 1 and 8 bullets.
 - Bullet format: noun-action phrase starting with the activity in noun/gerund form, then context and metric when available. Examples: "Development of REST APIs in FastAPI for payment platform.", "Optimization of SQL queries in PostgreSQL reducing latency by 40%.", "Automation of data pipelines with Airflow and AWS S3." — NO first person, NO past tense verbs as openers.
 - For experiences NOT directly related to the target role, include only 1-2 bullets focused on transferable skills. Omit tasks irrelevant to the role.
 - Within each experience, order bullets from most relevant to the target role first, down to least relevant.

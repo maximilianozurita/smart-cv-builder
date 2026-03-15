@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart CV Builder</title>
+  <link rel="stylesheet" href="/static/css/app.css" />
+</head>
+<body>
+  <!-- ── App Header (title + settings buttons on same line) ── -->
+  <header class="app-header">
+    <div class="app-header-brand">
+      <span class="logo">⚡ Smart CV Builder</span>
+      <span class="subtitle">AI-powered · ATS-optimized</span>
+    </div>
+    <div class="app-header-actions">
+      <button class="btn btn-settings-item" onclick="settings.openSettings('candidate')">👤 Candidate Data</button>
+      <button class="btn btn-settings-item" onclick="settings.openSettings('roles')">🎯 Roles</button>
+      <button class="btn btn-settings-item" onclick="settings.openSettings('docx')">📄 Word Template</button>
+    </div>
+  </header>
+
+  <main class="three-panel">
+
+    <!-- ── PANEL 1: Inputs ── -->
+    <section class="panel panel-inputs" id="panel-inputs">
+      <h2 class="panel-title">Job Description</h2>
+
+      <label class="field-label" for="jd-textarea">Paste JD</label>
+      <textarea id="jd-textarea" class="jd-textarea" placeholder="Paste the full job description here…"></textarea>
+
+      <label class="field-label" for="role-select">Role</label>
+      <select id="role-select" class="select-input"></select>
+
+      <label class="field-label" for="provider-select">Provider</label>
+      <select id="provider-select" class="select-input">
+        <option value="groq">Groq (llama-3.3-70b)</option>
+        <option value="openai">OpenAI (gpt-4o)</option>
+        <option value="anthropic">Anthropic (claude-sonnet)</option>
+        <option value="xai">xAI (grok-3-mini)</option>
+        <option value="gemini">Gemini (2.5-flash)</option>
+      </select>
+
+      <div class="dry-run-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="dry-run-check" />
+          Dry run (no LLM call)
+        </label>
+        <button class="info-btn" onclick="document.getElementById('dry-run-info').classList.toggle('hidden')" title="What is dry run?">ℹ</button>
+      </div>
+      <div id="dry-run-info" class="info-box hidden">
+        Skips the LLM call and fills the CV with a hardcoded mock response. Useful for testing the template layout, fonts, colors, and section order without spending API tokens.
+      </div>
+
+      <button id="btn-generate" class="btn btn-primary" onclick="app.generate()">
+        ✨ Generate CV
+      </button>
+
+      <div id="error-box" class="error-box hidden"></div>
+
+      <!-- ATS Keywords -->
+      <div id="ats-panel" class="ats-panel hidden">
+        <h3 class="ats-title">ATS Keywords</h3>
+        <div class="ats-keywords">
+          <div class="kw-group">
+            <span class="kw-label kw-matched">✓ Matched</span>
+            <div id="ats-matched" class="kw-list"></div>
+          </div>
+          <div class="kw-group">
+            <span class="kw-label kw-missing">✗ Missing</span>
+            <div id="ats-missing" class="kw-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PANEL 2: Template Editor ── -->
+    <section class="panel panel-editor" id="panel-editor">
+      <div class="panel-title-row">
+        <h2 class="panel-title">Template</h2>
+        <div class="template-actions">
+          <select id="template-select" class="select-input select-sm"></select>
+          <button class="btn btn-sm" onclick="editor.saveTemplate()" title="Save current template">Save</button>
+          <button class="btn btn-sm" onclick="editor.saveAsNew()" title="Save as a new template">Save as New</button>
+          <button class="btn btn-sm btn-danger-sm" onclick="editor.deleteTemplate()" title="Delete this template">🗑</button>
+        </div>
+      </div>
+
+      <div class="page-config-section">
+        <details open>
+          <summary class="config-summary">Page Settings</summary>
+          <div class="config-grid">
+            <label>Font Family
+              <select id="cfg-font" class="cfg-input cfg-select" onchange="editor.onPageConfigChange()">
+                <option value="Inter">Inter</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Open Sans">Open Sans</option>
+                <option value="Lato">Lato</option>
+                <option value="Source Sans Pro">Source Sans Pro</option>
+                <option value="Nunito">Nunito</option>
+                <option value="Poppins">Poppins</option>
+                <option value="PT Sans">PT Sans</option>
+                <option value="Merriweather">Merriweather</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+              </select>
+            </label>
+            <label>Font Size (pt)
+              <input type="number" id="cfg-font-size" class="cfg-input" value="10" min="7" max="14" step="0.5" oninput="editor.onPageConfigChange()" />
+            </label>
+            <label>Margin Top (mm)
+              <input type="number" id="cfg-margin-top" class="cfg-input" value="18" min="5" max="40" oninput="editor.onPageConfigChange()" />
+            </label>
+            <label>Margin Left (mm)
+              <input type="number" id="cfg-margin-left" class="cfg-input" value="18" min="5" max="40" oninput="editor.onPageConfigChange()" />
+            </label>
+            <label>Accent Color
+              <input type="color" id="cfg-accent" class="cfg-input cfg-color" value="#2563eb" oninput="editor.onPageConfigChange()" title="Border, section titles, bullet points" />
+            </label>
+            <label>Title Color
+              <input type="color" id="cfg-title-color" class="cfg-input cfg-color" value="#1e3a8a" oninput="editor.onPageConfigChange()" title="Name (h1) in the header" />
+            </label>
+          </div>
+        </details>
+      </div>
+
+      <h3 class="sections-title">Sections <span class="hint">(drag to reorder)</span></h3>
+      <ul id="sections-list" class="sections-list"></ul>
+    </section>
+
+    <!-- ── PANEL 3: Live Preview ── -->
+    <section class="panel panel-preview" id="panel-preview">
+      <div class="preview-toolbar">
+        <h2 class="panel-title">Preview</h2>
+        <div class="preview-actions">
+          <div class="export-btn-group">
+            <button class="btn btn-outline" id="btn-pdf" onclick="app.downloadPdf()" disabled title="Generates PDF from the HTML preview shown here">⬇ PDF</button>
+            <span class="export-source-hint">HTML preview</span>
+          </div>
+          <div class="export-btn-group">
+            <button class="btn btn-outline" id="btn-docx" onclick="app.downloadDocx()" disabled title="Generates DOCX from cv_template.docx (Word template)">⬇ DOCX</button>
+            <span class="export-source-hint">Word template</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-wrap">
+        <div id="loading-overlay" class="loading-overlay hidden">
+          <div class="spinner"></div>
+          <p>Generating CV…</p>
+        </div>
+        <iframe id="preview-frame" class="preview-frame" title="CV Preview"></iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Settings Modal ── -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Settings</h2>
+        <button class="modal-close" onclick="settings.closeSettings()">✕</button>
+      </div>
+      <div class="modal-tabs">
+        <button class="settings-tab-btn active" data-tab="candidate" onclick="settings.switchTab('candidate')">👤 Candidate Data</button>
+        <button class="settings-tab-btn" data-tab="roles" onclick="settings.switchTab('roles')">🎯 Roles</button>
+        <button class="settings-tab-btn" data-tab="docx" onclick="settings.switchTab('docx')">📄 Word Template</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Candidate Data pane -->
+        <div class="settings-pane" data-pane="candidate">
+          <p class="settings-hint">Edit <code>data/candidate_data.json</code> — personal info, education, experience, skills, etc.</p>
+          <textarea id="candidate-editor" class="json-editor" spellcheck="false"></textarea>
+          <div class="settings-actions">
+            <button class="btn btn-sm" onclick="settings.reloadCandidate()">↺ Reload from disk</button>
+            <button class="btn btn-sm btn-primary-sm" onclick="settings.saveCandidate()">Save</button>
+          </div>
+          <span id="candidate-status" class="settings-status"></span>
+        </div>
+
+        <!-- Roles pane -->
+        <div class="settings-pane hidden" data-pane="roles">
+          <p class="settings-hint">Edit <code>data/roles.json</code> — role definitions and prompts. After saving, reload the page to refresh the dropdown.</p>
+          <textarea id="roles-editor" class="json-editor" spellcheck="false"></textarea>
+          <div class="settings-actions">
+            <button class="btn btn-sm" onclick="settings.reloadRoles()">↺ Reload from disk</button>
+            <button class="btn btn-sm btn-primary-sm" onclick="settings.saveRoles()">Save</button>
+          </div>
+          <span id="roles-status" class="settings-status"></span>
+        </div>
+
+        <!-- DOCX Template pane -->
+        <div class="settings-pane hidden" data-pane="docx">
+          <p class="settings-hint">
+            The <strong>DOCX download</strong> uses <code>templates/cv_template.docx</code> as the Word template (fills <code>{{MACRO}}</code> placeholders).<br/>
+            The <strong>PDF download</strong> uses the HTML preview template shown in the interface.
+          </p>
+          <div class="docx-info-row">
+            <span id="docx-current-info" class="docx-current-info">Loading…</span>
+          </div>
+          <div class="settings-actions">
+            <input type="file" id="docx-file-input" accept=".docx" style="font-size:12px;flex:1;color:var(--gray-700)" />
+            <button class="btn btn-sm btn-primary-sm" onclick="settings.uploadDocx()">Upload</button>
+          </div>
+          <span id="docx-status" class="settings-status"></span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/static/js/app.js"></script>
+  <script type="module" src="/static/js/settings.js"></script>
+</body>
+</html>
