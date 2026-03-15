@@ -3,8 +3,13 @@
 
 # Personal data (keep locally, do not commit)
 data/candidate_data.json
+data/roles.json
 job_description.txt
 templates/cv_template.docx
+
+# UI templates (personal, keep locally)
+web/cv_templates/*.json
+!web/cv_templates/*.example.json
 
 # Generated output
 output/

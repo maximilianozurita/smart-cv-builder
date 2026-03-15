@@ -11,7 +11,7 @@ class ExperienceLLM(BaseModel):
 	role: str
 	start_date: str
 	end_date: str
-	bullets: List[str] = Field(min_length=1, max_length=6)
+	bullets: List[str] = Field(min_length=1, max_length=8)
 
 	@field_validator("bullets")
 	@classmethod

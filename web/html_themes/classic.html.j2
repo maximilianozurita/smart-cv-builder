@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ replacements.get('FULL_NAME', 'CV') }}</title>
+<style>
+  {%- set _sys_fonts = ['Georgia', 'Arial', 'Times New Roman', 'Courier New'] -%}
+  {%- if page.font_family not in _sys_fonts -%}
+  @import url('https://fonts.googleapis.com/css2?family={{ page.font_family | replace(" ", "+") }}:wght@300;400;500;600;700&display=swap');
+  {%- endif -%}
+
+  /* ── Page (print/PDF) ── */
+  @page {
+    size: A4;
+    margin: 14mm 17mm;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: '{{ page.font_family }}', 'Inter', Arial, sans-serif;
+    font-size: {{ page.base_font_size_pt }}pt;
+    line-height: 1.45;
+    color: #1a1a1a;
+    background: #fff;
+  }
+
+  .cv-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: {{ page.margin_top_mm }}mm {{ page.margin_right_mm }}mm {{ page.margin_bottom_mm }}mm {{ page.margin_left_mm }}mm;
+    background: #fff;
+  }
+
+  /* ── Header ── */
+  .cv-header {
+    border-bottom: 2px solid {{ page.accent_color }};
+    padding-bottom: 9px;
+    margin-bottom: 12px;
+  }
+  .cv-header h1 {
+    font-size: {{ (page.base_font_size_pt * 2.2) | round(1) }}pt;
+    font-weight: 700;
+    color: {{ page.title_color }};
+    letter-spacing: -0.3px;
+    line-height: 1.1;
+  }
+  .cv-header .contact-line {
+    margin-top: 4px;
+    font-size: {{ (page.base_font_size_pt * 0.88) | round(1) }}pt;
+    color: #555;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 4px;
+  }
+  .cv-header .contact-line span { white-space: nowrap; }
+  .cv-header .contact-line .sep { color: #bbb; }
+
+  /* ── Section ── */
+  .cv-section { margin-bottom: 11px; }
+
+  .section-title {
+    font-size: {{ (page.base_font_size_pt * 1.05) | round(1) }}pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: {{ page.accent_color }};
+    border-bottom: 1px solid {{ page.accent_color }};
+    padding-bottom: 2px;
+    margin-bottom: 5px;
+    opacity: 0.85;
+  }
+
+  /* ── Text block (profile, languages) ── */
+  .text-block p {
+    text-align: justify;
+    color: #333;
+  }
+
+  /* ── Skills ── */
+  .skills-block .skill-group {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 2px;
+    font-size: {{ (page.base_font_size_pt * 0.95) | round(1) }}pt;
+  }
+  .skills-block .skill-label {
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+  }
+  .skills-block .skill-values { color: #555; }
+
+  /* ── Experience ── */
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3px;
+  }
+  .exp-header .exp-left { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+  .exp-company {
+    font-weight: 700;
+    font-size: {{ (page.base_font_size_pt * 1.0) | round(1) }}pt;
+    color: #1a1a1a;
+  }
+  .exp-role {
+    font-weight: 500;
+    font-size: {{ (page.base_font_size_pt * 0.95) | round(1) }}pt;
+    color: #4b5563;
+  }
+  .exp-dates {
+    font-size: {{ (page.base_font_size_pt * 0.88) | round(1) }}pt;
+    color: #6b7280;
+    white-space: nowrap;
+  }
+  .date-sep { color: #9ca3af; }
+  .exp-bullets {
+    list-style: none;
+    padding: 0;
+    margin-top: 2px;
+  }
+  .exp-bullets li {
+    padding-left: 13px;
+    position: relative;
+    margin-bottom: 1px;
+    font-size: {{ (page.base_font_size_pt * 0.93) | round(1) }}pt;
+    color: #374151;
+    text-align: justify;
+  }
+  .exp-bullets li::before {
+    content: "•";
+    position: absolute;
+    left: 1px;
+    color: {{ page.accent_color }};
+  }
+
+  /* ── Education ── */
+  .edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .edu-left { display: flex; flex-direction: column; gap: 1px; }
+  .edu-institution { font-weight: 600; color: #1a1a1a; }
+  .edu-degree { color: #4b5563; font-size: {{ (page.base_font_size_pt * 0.93) | round(1) }}pt; }
+  .edu-date { font-size: {{ (page.base_font_size_pt * 0.88) | round(1) }}pt; color: #6b7280; white-space: nowrap; }
+
+  /* ── Editable elements (screen only) ── */
+  @media screen {
+    [data-key] {
+      border-radius: 2px;
+      transition: background 0.12s, outline 0.12s;
+      cursor: text;
+    }
+    [data-key]:hover {
+      background: rgba(37, 99, 235, 0.06);
+      outline: 1px dashed rgba(37, 99, 235, 0.35);
+    }
+    [data-key]:focus {
+      background: rgba(37, 99, 235, 0.09);
+      outline: 2px solid rgba(37, 99, 235, 0.45);
+    }
+  }
+
+  /* ── Print / PDF ── */
+  @media print {
+    body { line-height: 1.35; background: none; }
+    .cv-page { padding: 0; width: 100%; min-height: auto; }
+    .cv-header { padding-bottom: 7px; margin-bottom: 10px; }
+    .cv-section { margin-bottom: 8px; }
+    .section-title { padding-bottom: 1px; margin-bottom: 4px; }
+    .exp-bullets li { margin-bottom: 1px; }
+    .skill-group { margin-bottom: 1px; }
+    [data-key]:hover, [data-key]:focus { outline: none !important; background: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="cv-page">
+
+{%- for section in sections %}
+
+  {# ── HEADER ── #}
+  {%- if section.type == 'header' %}
+  {%- set _h_align = section.config.get('text_align', 'center') %}
+  {%- set _h_justify = 'center' if _h_align == 'center' else ('flex-end' if _h_align == 'right' else 'flex-start') %}
+  <div class="cv-header" style="text-align: {{ _h_align }}">
+    <h1 data-key="FULL_NAME">{{ replacements.get('FULL_NAME', '') }}</h1>
+    <div class="contact-line" style="justify-content: {{ _h_justify }}">
+      {%- set ns = namespace(first=true) %}
+      {%- for field in ['LOCATION', 'PHONE', 'EMAIL', 'LINKEDIN'] %}
+        {%- if replacements.get(field) %}
+          {%- if not ns.first %}<span class="sep"> · </span>{%- endif %}
+          <span data-key="{{ field }}">{{ replacements.get(field) }}</span>
+          {%- set ns.first = false %}
+        {%- endif %}
+      {%- endfor %}
+    </div>
+  </div>
+
+  {# ── TEXT BLOCK ── #}
+  {%- elif section.type == 'text_block' %}
+  <div class="cv-section text-block">
+    {%- if section.config.get('section_title') %}
+    <div class="section-title">{{ section.config.section_title }}</div>
+    {%- endif %}
+    {%- if section.id == 'profile' %}
+    <p data-key="PROFILE" style="text-align: {{ section.config.get('text_align', 'justify') }}">{{ replacements.get('PROFILE', '') }}</p>
+    {%- elif section.id == 'languages' %}
+    <p data-key="LANGUAGES" style="text-align: {{ section.config.get('text_align', 'left') }}">{{ replacements.get('LANGUAGES', '') }}</p>
+    {%- endif %}
+  </div>
+
+  {# ── SKILLS BLOCK ── #}
+  {%- elif section.type == 'skills_block' %}
+  <div class="cv-section skills-block">
+    {%- if section.config.get('section_title') %}
+    <div class="section-title">{{ section.config.section_title }}</div>
+    {%- endif %}
+    {%- set skills = replacements.get('SKILLS', []) %}
+    {%- if skills is string %}{%- set skills = [skills] %}{%- endif %}
+    {%- for group in skills %}
+      {%- set parts = group.split(':', 1) %}
+      <div class="skill-group" data-key="SKILLS" data-idx="{{ loop.index0 }}" style="text-align: {{ section.config.get('text_align', 'left') }}">
+        {%- if parts | length == 2 %}
+        <span class="skill-label">{{ parts[0] | trim }}:</span>
+        <span class="skill-values">{{ parts[1] | trim }}</span>
+        {%- else %}
+        <span class="skill-values">{{ group }}</span>
+        {%- endif %}
+      </div>
+    {%- endfor %}
+  </div>
+
+  {# ── EXPERIENCE BLOCK ── #}
+  {%- elif section.type == 'experience_block' %}
+  {%- set idx = section.config.get('experience_index', loop.index0) + 1 %}
+  <div class="cv-section experience-block">
+    {%- if section.config.get('show_section_title', false) and section.config.get('section_title') %}
+    <div class="section-title">{{ section.config.section_title }}</div>
+    {%- endif %}
+    <div class="exp-header">
+      <div class="exp-left">
+        <span class="exp-company" data-key="EXPERIENCE_COMPANY_{{ idx }}">{{ replacements.get('EXPERIENCE_COMPANY_' ~ idx, '') }}</span>
+        <span class="exp-role" data-key="EXPERIENCE_ROLE_{{ idx }}">{{ replacements.get('EXPERIENCE_ROLE_' ~ idx, '') }}</span>
+      </div>
+      <span class="exp-dates">
+        <span data-key="EXPERIENCE_START_DATE_{{ idx }}">{{ replacements.get('EXPERIENCE_START_DATE_' ~ idx, '') }}</span>
+        {%- if replacements.get('EXPERIENCE_END_DATE_' ~ idx) %}
+        <span class="date-sep"> – </span>
+        <span data-key="EXPERIENCE_END_DATE_{{ idx }}">{{ replacements.get('EXPERIENCE_END_DATE_' ~ idx) }}</span>
+        {%- endif %}
+      </span>
+    </div>
+    {%- set bullets = replacements.get('EXPERIENCE_DESCRIPTION_' ~ idx, []) %}
+    {%- if bullets %}
+    <ul class="exp-bullets">
+      {%- for bullet in bullets %}
+      <li data-key="EXPERIENCE_DESCRIPTION_{{ idx }}" data-idx="{{ loop.index0 }}" style="text-align: {{ section.config.get('text_align', 'justify') }}">{{ bullet | replace('• ', '') }}</li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </div>
+
+  {# ── EDUCATION BLOCK ── #}
+  {%- elif section.type == 'education_block' %}
+  <div class="cv-section education-block">
+    {%- if section.config.get('section_title') %}
+    <div class="section-title">{{ section.config.section_title }}</div>
+    {%- endif %}
+    {%- for i in [1, 2] %}
+    {%- if replacements.get('EDUCATION_INSTITUTION_' ~ i) %}
+    <div class="edu-row">
+      <div class="edu-left">
+        <span class="edu-institution" data-key="EDUCATION_INSTITUTION_{{ i }}">{{ replacements.get('EDUCATION_INSTITUTION_' ~ i) }}</span>
+        <span class="edu-degree" data-key="EDUCATION_DEGREE_{{ i }}">{{ replacements.get('EDUCATION_DEGREE_' ~ i, '') }}</span>
+      </div>
+      <span class="edu-date" data-key="EDUCATION_END_DATE_{{ i }}">{{ replacements.get('EDUCATION_END_DATE_' ~ i, '') }}</span>
+    </div>
+    {%- endif %}
+    {%- endfor %}
+  </div>
+
+  {%- endif %}
+{%- endfor %}
+
+</div>
+
+<script>
+(function () {
+  // Only activate when rendered inside an iframe (browser preview, not PDF)
+  if (window.parent === window) return;
+
+  var SINGLE_LINE = new Set([
+    'FULL_NAME','LOCATION','PHONE','EMAIL','LINKEDIN',
+    'EXPERIENCE_COMPANY_1','EXPERIENCE_COMPANY_2',
+    'EXPERIENCE_ROLE_1','EXPERIENCE_ROLE_2',
+    'EXPERIENCE_START_DATE_1','EXPERIENCE_END_DATE_1',
+    'EXPERIENCE_START_DATE_2','EXPERIENCE_END_DATE_2',
+    'EDUCATION_INSTITUTION_1','EDUCATION_DEGREE_1','EDUCATION_END_DATE_1',
+    'EDUCATION_INSTITUTION_2','EDUCATION_DEGREE_2','EDUCATION_END_DATE_2',
+    'LANGUAGES',
+  ]);
+
+  document.querySelectorAll('[data-key]').forEach(function (el) {
+    el.contentEditable = 'true';
+    el.spellcheck = false;
+
+    var key = el.dataset.key;
+    var idx = el.dataset.idx !== undefined ? parseInt(el.dataset.idx) : null;
+
+    // Prevent Enter in single-line fields and profile
+    if (SINGLE_LINE.has(key) || key === 'PROFILE') {
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+      });
+    }
+
+    el.addEventListener('blur', function () {
+      var value = el.innerText.replace(/\n{2,}/g, '\n').trim();
+      window.parent.postMessage({ type: 'cv-edit', key: key, idx: idx, value: value }, '*');
+    });
+  });
+})();
+</script>
+</body>
+</html>
