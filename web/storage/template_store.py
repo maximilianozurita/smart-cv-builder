@@ -17,7 +17,7 @@ def _path(template_id: str) -> Path:
 
 def list_templates() -> List[dict]:
     results = []
-    for f in sorted(TEMPLATES_DIR.glob("*.json")):
+    for f in sorted(f for f in TEMPLATES_DIR.glob("*.json") if not f.name.endswith(".example.json")):
         try:
             data = json.loads(f.read_text(encoding="utf-8"))
             results.append({"id": data.get("id", f.stem), "name": data.get("name", f.stem)})

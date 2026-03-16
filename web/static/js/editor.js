@@ -29,12 +29,19 @@ export function setTemplate(template) {
 function _syncPageConfigUI() {
   if (!_template) return;
   const p = _template.page;
+  _setVal('template-name-input', _template.name ?? '');
   _setVal('cfg-font', p.font_family ?? 'Inter');
   _setVal('cfg-font-size', p.base_font_size_pt ?? 10);
   _setVal('cfg-margin-top', p.margin_top_mm ?? 18);
   _setVal('cfg-margin-left', p.margin_left_mm ?? 18);
   _setVal('cfg-accent', p.accent_color ?? '#2563eb');
   _setVal('cfg-title-color', p.title_color ?? '#1e3a8a');
+}
+
+export function onTemplateNameChange() {
+  if (!_template) return;
+  const newName = _getVal('template-name-input');
+  if (newName) _template.name = newName;
 }
 
 export function onPageConfigChange() {
@@ -187,6 +194,10 @@ export async function saveTemplate() {
       body: JSON.stringify(_template),
     });
     if (!res.ok) throw new Error(await res.text());
+    // Update the selector option text to reflect any name change
+    const sel = document.getElementById('template-select');
+    const opt = sel && sel.querySelector(`option[value="${_template.id}"]`);
+    if (opt) opt.textContent = _template.name;
     alert('Template saved!');
   } catch (e) { alert('Save failed: ' + e.message); }
 }
@@ -241,4 +252,4 @@ function _getVal(id) {
 }
 
 // Expose to inline HTML handlers
-window.editor = { toggleVisible, toggleConfig, updateSectionConfig, onPageConfigChange, saveTemplate, saveAsNew, deleteTemplate };
+window.editor = { toggleVisible, toggleConfig, updateSectionConfig, onPageConfigChange, onTemplateNameChange, saveTemplate, saveAsNew, deleteTemplate };

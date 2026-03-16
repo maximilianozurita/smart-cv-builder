@@ -80,6 +80,8 @@
         <h2 class="panel-title">Template</h2>
         <div class="template-actions">
           <select id="template-select" class="select-input select-sm"></select>
+          <input type="text" id="template-name-input" class="cfg-input" placeholder="Template name"
+                 title="Edit template name" oninput="editor.onTemplateNameChange()" />
           <button class="btn btn-sm" onclick="editor.saveTemplate()" title="Save current template">Save</button>
           <button class="btn btn-sm" onclick="editor.saveAsNew()" title="Save as a new template">Save as New</button>
           <button class="btn btn-sm btn-danger-sm" onclick="editor.deleteTemplate()" title="Delete this template">🗑</button>

@@ -229,6 +229,7 @@ input, select, textarea, button {
   font-weight: 600;
   cursor: pointer;
   border: none;
+  white-space: nowrap;
   transition: background .15s, opacity .15s;
 }
 .btn:disabled { opacity: .35; cursor: not-allowed; }
@@ -366,6 +367,12 @@ input, select, textarea, button {
   display: flex;
   gap: 5px;
   align-items: center;
+  flex-wrap: wrap;
+}
+#template-name-input {
+  flex: 1;
+  min-width: 80px;
+  max-width: 140px;
 }
 
 .page-config-section { margin-top: 10px; }
