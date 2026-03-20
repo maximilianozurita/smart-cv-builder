@@ -164,12 +164,12 @@ Donde se configura la generación del CV:
 
 **Role** — Seleccionar el perfil de rol. Define el foco del CV (backend, data, fullstack, etc.). Los roles se configuran en `data/roles.json`.
 
-**Provider** — Seleccionar el proveedor LLM a usar para esta generación:
+**Provider** — Seleccionar el proveedor LLM a usar para esta generación (default: Gemini):
+- Gemini (2.5-flash) — Gratis
 - Groq (llama-3.3-70b) — Rápido, free tier
 - OpenAI (gpt-4o)
 - Anthropic (claude-sonnet)
 - xAI (grok-3-mini)
-- Gemini (2.5-flash) — Gratis
 
 **Dry run** — Activa el modo de prueba: omite la llamada al LLM y rellena el CV con una respuesta mock hardcodeada. Útil para probar el layout, fuentes, colores y orden de secciones sin gastar tokens de API.
 
@@ -186,6 +186,7 @@ Permite personalizar el diseño del CV sin tocar código:
 **Save / Save as New / 🗑** — Guardar el template actual, crear una copia con nuevo nombre, o eliminar el template seleccionado (el `default` no se puede eliminar).
 
 **Page Settings** (acordeón desplegable):
+- Output Filename — Nombre base del archivo descargado (sin extensión). Se guarda por template. Ejemplo: `john_doe_backend` → `john_doe_backend.pdf` / `.docx`.
 - Font Family — Seleccionar entre 12 fuentes (Inter, Roboto, Poppins, Georgia, Arial, etc.)
 - Font Size (pt) — Tamaño base del texto (7–14pt)
 - Margin Top / Margin Left (mm) — Márgenes de la página
@@ -201,6 +202,12 @@ Permite personalizar el diseño del CV sin tocar código:
 
 ![alt text](image.png)
 Cualquier cambio en el editor actualiza el preview en tiempo real (debounce de 300ms).
+
+**Cover Letter** — Sección al final del panel. Al generar el CV, la carta de presentación se genera automáticamente junto con el contenido del CV en la misma llamada al LLM. El resultado aparece en el área de texto editable.
+- **✨ Generate** — Regenera solo la cover letter sin re-ejecutar el pipeline completo (útil para ajustar el tono).
+- **Copy** — Copia el texto al portapapeles.
+- El texto es editable antes de copiar.
+
 ---
 
 ### Panel 3 — Preview (derecha)
@@ -348,7 +355,7 @@ POST /api/generate
   → html_renderer.render_cv_html(replacements, template)
       → Jinja2 renderiza classic.html.j2 con secciones visibles del template
   → ats_service.score_ats()   ← extrae keywords matched/missing del JD
-  → respuesta: { llm_response, preview_html, ats_keywords }
+  → respuesta: { llm_response, preview_html, ats_keywords, cover_letter }
 ```
 
 ---
@@ -356,12 +363,13 @@ POST /api/generate
 ### Qué procesa el LLM (y qué no)
 
 El LLM **recibe** para reescribir y adaptar:
+- `candidate_name` — nombre del candidato (para la cover letter)
 - `technical_skills` — grupos de habilidades del candidato
 - `summary_base` — párrafo base del candidato
 - `experience` — historial completo (responsabilidades, logros, tecnologías)
 
 El LLM **NO recibe** (se inyectan directamente desde JSON):
-- `personal_info` (nombre, email, teléfono, LinkedIn, ubicación)
+- `personal_info` parcial (email, teléfono, LinkedIn, ubicación)
 - `education`
 - `languages`
 
@@ -369,6 +377,7 @@ El LLM **devuelve** (JSON estricto validado por Pydantic):
 - `profile` — párrafo de perfil adaptado al JD (50–800 chars)
 - `skills` — habilidades agrupadas en formato `Grupo: skill1, skill2 | Grupo: skill1`
 - `experiences` — exactamente 2 experiencias con bullets adaptados al JD
+- `cover_letter` — carta de presentación corta (2 párrafos, tono directo y personal)
 
 ---
 

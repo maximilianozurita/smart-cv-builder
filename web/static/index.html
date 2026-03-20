@@ -34,11 +34,11 @@
 
       <label class="field-label" for="provider-select">Provider</label>
       <select id="provider-select" class="select-input">
+        <option value="gemini">Gemini (2.5-flash)</option>
         <option value="groq">Groq (llama-3.3-70b)</option>
         <option value="openai">OpenAI (gpt-4o)</option>
         <option value="anthropic">Anthropic (claude-sonnet)</option>
         <option value="xai">xAI (grok-3-mini)</option>
-        <option value="gemini">Gemini (2.5-flash)</option>
       </select>
 
       <div class="dry-run-row">
@@ -91,6 +91,15 @@
       <div class="page-config-section">
         <details open>
           <summary class="config-summary">Page Settings</summary>
+          <div class="output-filename-row">
+            <label class="output-filename-label">Output Filename
+              <div class="output-filename-input-wrap">
+                <input type="text" id="cfg-output-filename" class="cfg-input" placeholder="cv"
+                       oninput="editor.onOutputFilenameChange()" />
+                <span class="output-filename-ext">.pdf / .docx</span>
+              </div>
+            </label>
+          </div>
           <div class="config-grid">
             <label>Font Family
               <select id="cfg-font" class="cfg-input cfg-select" onchange="editor.onPageConfigChange()">
@@ -129,6 +138,23 @@
 
       <h3 class="sections-title">Sections <span class="hint">(drag to reorder)</span></h3>
       <ul id="sections-list" class="sections-list"></ul>
+
+      <!-- ── Cover Letter ── -->
+      <div class="cover-letter-section">
+        <div class="cover-letter-header">
+          <h3 class="sections-title" style="margin:0">Cover Letter</h3>
+          <div class="cover-letter-actions">
+            <button id="btn-cover-letter" class="btn btn-sm" onclick="app.generateCoverLetter()" title="Generate cover letter using the current job description and provider">
+              ✨ Generate
+            </button>
+            <button class="btn btn-sm btn-outline" onclick="app.copyCoverLetter()" title="Copy to clipboard">
+              Copy
+            </button>
+          </div>
+        </div>
+        <div id="cover-letter-loading" class="cover-letter-loading hidden">Generating…</div>
+        <textarea id="cover-letter-textarea" class="cover-letter-textarea" placeholder="Generate a cover letter or write your own…" spellcheck="true"></textarea>
+      </div>
     </section>
 
     <!-- ── PANEL 3: Live Preview ── -->

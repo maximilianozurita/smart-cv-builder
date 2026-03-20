@@ -29,5 +29,6 @@ class CvTemplate(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     theme: str = "classic"
+    output_filename: str = "cv"
     page: PageConfig = Field(default_factory=PageConfig)
     sections: List[CvTemplateSection] = Field(default_factory=list)

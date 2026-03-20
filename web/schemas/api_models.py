@@ -29,6 +29,7 @@ class GenerateResponse(BaseModel):
     replacements: Dict[str, Any]
     preview_html: str
     ats_score: AtsScoreDetail
+    cover_letter: str = ""
 
 
 # ── Preview ───────────────────────────────────────────────────────────────────
@@ -52,3 +53,15 @@ class AtsScoreRequest(BaseModel):
 class ExportRequest(BaseModel):
     replacements: Dict[str, Any]
     template: CvTemplate
+
+
+# ── Cover Letter ──────────────────────────────────────────────────────────────
+
+class CoverLetterRequest(BaseModel):
+    job_description: str
+    role: str
+    provider: str = "groq"
+
+
+class CoverLetterResponse(BaseModel):
+    cover_letter: str

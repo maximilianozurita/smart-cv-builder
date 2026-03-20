@@ -30,6 +30,7 @@ function _syncPageConfigUI() {
   if (!_template) return;
   const p = _template.page;
   _setVal('template-name-input', _template.name ?? '');
+  _setVal('cfg-output-filename', _template.output_filename ?? 'cv');
   _setVal('cfg-font', p.font_family ?? 'Inter');
   _setVal('cfg-font-size', p.base_font_size_pt ?? 10);
   _setVal('cfg-margin-top', p.margin_top_mm ?? 18);
@@ -42,6 +43,11 @@ export function onTemplateNameChange() {
   if (!_template) return;
   const newName = _getVal('template-name-input');
   if (newName) _template.name = newName;
+}
+
+export function onOutputFilenameChange() {
+  if (!_template) return;
+  _template.output_filename = _getVal('cfg-output-filename') || 'cv';
 }
 
 export function onPageConfigChange() {
@@ -252,4 +258,4 @@ function _getVal(id) {
 }
 
 // Expose to inline HTML handlers
-window.editor = { toggleVisible, toggleConfig, updateSectionConfig, onPageConfigChange, onTemplateNameChange, saveTemplate, saveAsNew, deleteTemplate };
+window.editor = { toggleVisible, toggleConfig, updateSectionConfig, onPageConfigChange, onTemplateNameChange, onOutputFilenameChange, saveTemplate, saveAsNew, deleteTemplate };

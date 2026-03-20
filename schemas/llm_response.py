@@ -26,6 +26,7 @@ class LLMResponse(BaseModel):
 	profile: str = Field(min_length=50, max_length=800)
 	skills: str = Field(min_length=5)
 	experiences: List[ExperienceLLM] = Field(min_length=2, max_length=2)
+	cover_letter: str = Field(default="")
 
 	@field_validator("experiences")
 	@classmethod

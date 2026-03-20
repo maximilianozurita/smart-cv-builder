@@ -22,7 +22,8 @@ Return ONLY a valid JSON object with this exact structure (no markdown, no expla
 	  ]
 	},
 	{ ... second experience, same structure ... }
-  ]
+  ],
+  "cover_letter": "<full cover letter, 3-4 paragraphs, first person, professional tone>"
 }"""
 
 SYSTEM_PROMPT_TEMPLATE = """\
@@ -43,6 +44,13 @@ STRICT RULES:
 - The "skills" field: pipe-separated groups, each with a descriptive label followed by colon and comma-separated skills.
   Example: "Languages: Python, SQL, Java | Frameworks: FastAPI, Django | Cloud & DevOps: Docker, AWS, Kubernetes"
   Choose 3-5 groups with labels relevant to the job description. Each group on its own line when rendered.
+- The "cover_letter" field: write a SHORT, direct cover letter — 2 paragraphs max, 5-6 sentences total.
+  Sound like a real person, not a recruiter. No clichés ("I am writing to express", "I am excited about the opportunity", "Thank you for your consideration").
+  First paragraph: why this specific role/company is interesting to the candidate, one concrete thing from their background that's directly relevant.
+  Second paragraph: one or two specific achievements from their experience that match the JD, then a simple closing line.
+  Use first person, casual-professional tone. No filler sentences. No corporate buzzwords.
+  Do NOT invent achievements not present in the candidate's information.
+  Write in the same language as the job description. Do not include subject line or headers — just the letter body.
 
 {output_format}"""
 
@@ -56,6 +64,9 @@ Focus areas: {focus_areas}
 Prioritize skills: {prioritize_skills}
 Bullet style: {bullet_style}
 Experience selection criteria: {experience_selection_criteria}
+
+## CANDIDATE
+Name: {candidate_name}
 
 ## CANDIDATE SKILLS
 {skills_text}
@@ -89,6 +100,7 @@ def build_prompt(
 		prioritize_skills=", ".join(role.prioritize_skills) or "all",
 		bullet_style=role.bullet_style,
 		experience_selection_criteria=role.experience_selection_criteria or "most recent and relevant",
+		candidate_name=candidate.personal_info.full_name,
 		skills_text=skills_text,
 		summary_base=candidate.summary_base,
 		experience_text=experience_text,
