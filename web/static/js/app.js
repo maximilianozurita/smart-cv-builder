@@ -94,6 +94,9 @@ export async function generate() {
     setPreviewHtml(data.preview_html);
     renderAtsScore(data.ats_score);
     enableExports(true);
+    if (data.cover_letter) {
+      document.getElementById('cover-letter-textarea').value = data.cover_letter;
+    }
   } catch (e) {
     showError(e.message);
   } finally {
@@ -145,12 +148,14 @@ function _schedulePreview() {
 // ── Export ────────────────────────────────────────────────────────────────────
 export async function downloadPdf() {
   if (!_state.replacements || !_state.template) return;
-  await _download('/api/export/pdf', 'cv.pdf');
+  const base = _state.template.output_filename || 'cv';
+  await _download('/api/export/pdf', `${base}.pdf`);
 }
 
 export async function downloadDocx() {
   if (!_state.replacements || !_state.template) return;
-  await _download('/api/export/docx', 'cv.docx');
+  const base = _state.template.output_filename || 'cv';
+  await _download('/api/export/docx', `${base}.docx`);
 }
 
 async function _download(url, filename) {
@@ -200,8 +205,55 @@ function clearError() {
   el.classList.add('hidden');
 }
 
+// ── Cover Letter ──────────────────────────────────────────────────────────────
+export async function generateCoverLetter() {
+  const jd = document.getElementById('jd-textarea').value.trim();
+  if (!jd) { showError('Paste a job description first.'); return; }
+
+  const role = document.getElementById('role-select').value;
+  const provider = document.getElementById('provider-select').value;
+
+  const loadingEl = document.getElementById('cover-letter-loading');
+  const btn = document.getElementById('btn-cover-letter');
+  loadingEl.classList.remove('hidden');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/cover-letter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ job_description: jd, role, provider }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || res.statusText);
+    }
+    const data = await res.json();
+    document.getElementById('cover-letter-textarea').value = data.cover_letter;
+  } catch (e) {
+    showError(`Cover letter failed: ${e.message}`);
+  } finally {
+    loadingEl.classList.add('hidden');
+    btn.disabled = false;
+  }
+}
+
+export async function copyCoverLetter() {
+  const text = document.getElementById('cover-letter-textarea').value;
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    const btn = document.querySelector('.cover-letter-actions .btn-outline');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  } catch {
+    showError('Could not copy to clipboard.');
+  }
+}
+
 // ── Expose to HTML inline handlers ───────────────────────────────────────────
-window.app = { generate, downloadPdf, downloadDocx, loadTemplates };
+window.app = { generate, downloadPdf, downloadDocx, loadTemplates, generateCoverLetter, copyCoverLetter };
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 boot();

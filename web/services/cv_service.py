@@ -80,6 +80,12 @@ def _mock_raw(candidate: CandidateData) -> str:
             },
         ],
     }
+    mock["cover_letter"] = (
+        "This role caught my attention because it aligns closely with the kind of backend work I've been doing "
+        "for the past few years — building APIs, optimizing data pipelines, and keeping systems reliable at scale.\n\n"
+        "Most recently I cut API latency by 40% and led a zero-downtime auth migration that unblocked three teams. "
+        "Happy to dig into the details whenever works for you."
+    )
     return json.dumps(mock, ensure_ascii=False)
 
 

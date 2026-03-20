@@ -725,6 +725,75 @@ input, select, textarea, button {
   display: block;
 }
 
+/* ── Output Filename Row ──────────────────────────────────────────────────── */
+.output-filename-row {
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+.output-filename-label {
+  font-size: 10px;
+  color: var(--gray-500);
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.output-filename-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.output-filename-input-wrap .cfg-input {
+  flex: 1;
+}
+.output-filename-ext {
+  font-size: 10px;
+  color: var(--gray-400);
+  white-space: nowrap;
+}
+
+/* ── Cover Letter Section ─────────────────────────────────────────────────── */
+.cover-letter-section {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cover-letter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.cover-letter-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.cover-letter-loading {
+  font-size: 11px;
+  color: var(--gray-400);
+  font-style: italic;
+}
+.cover-letter-textarea {
+  width: 100%;
+  flex: 1;
+  min-height: 340px;
+  resize: vertical;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--gray-700);
+  background: var(--gray-50);
+  outline: none;
+  transition: border-color .15s;
+}
+.cover-letter-textarea:focus { border-color: var(--blue-600); }
+
 /* ── Responsive: stack panels on small screens ────────────────────────────── */
 @media (max-width: 900px) {
   .three-panel {
