@@ -124,7 +124,17 @@ Para agregar un nuevo rol: editar `data/roles.json` con la misma estructura que 
 
 ---
 
-## 8. (Opcional) Agregar plantilla Word
+## 8. Copiar el template de CV por defecto
+
+```bash
+cp web/cv_templates/default.example.json web/cv_templates/default.json
+```
+
+> **Este paso es obligatorio.** Sin el archivo `default.json`, el selector de templates queda vacío, el estado interno del frontend nunca se inicializa y como resultado: el preview del CV aparece en blanco y los botones de descarga (PDF y DOCX) no hacen nada.
+
+---
+
+## 10. (Opcional) Agregar plantilla Word
 
 Colocar `templates/cv_template.docx` con los macros `{{MACRO}}` correspondientes. También se puede subir desde la interfaz: **Settings → Word Template**.
 
@@ -132,22 +142,40 @@ Ver la lista completa de macros disponibles en [docs/arquitectura.md](arquitectu
 
 ---
 
-## 9. Levantar la aplicación
+## 11. Levantar la aplicación
 
 **macOS / Linux:**
 ```bash
 ./run_web.sh
 ```
 
-> El script activa el entorno virtual y configura `DYLD_LIBRARY_PATH` para que WeasyPrint encuentre las librerías de Homebrew en macOS.
+El script activa el entorno virtual, configura `DYLD_LIBRARY_PATH` para WeasyPrint en macOS y acepta dos flags opcionales:
+
+| Flag | Descripción | Ejemplo |
+|---|---|---|
+| `--host <ip>` | Interfaz en la que escucha uvicorn (default: `127.0.0.1`) | `--host 0.0.0.0` |
+| `--port <n>` | Puerto (default: `8000`) | `--port 8080` |
+
+**Acceso solo desde localhost (default):**
+```bash
+./run_web.sh
+```
+
+**Acceso desde la red local o Tailscale:**
+```bash
+./run_web.sh --host 0.0.0.0
+```
+
+> Con `--host 0.0.0.0` el servidor escucha en todas las interfaces. Útil al conectarse vía Tailscale u otra red remota.
 
 **Windows:**
 ```bash
 .venv\Scripts\activate
 uvicorn web.main:app --reload --port 8000
+# Para acceso remoto: uvicorn web.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Abrir en el navegador: **http://localhost:8000**
+Abrir en el navegador: **http://localhost:8000** (o la IP/hostname de Tailscale si se usó `--host 0.0.0.0`)
 
 ---
 

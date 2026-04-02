@@ -25,9 +25,14 @@ El resultado se entrega como HTML interactivo (preview editable), PDF descargabl
 ## Uso rápido
 
 ```bash
-# Levantar la app
+# Acceso local
 ./run_web.sh
-# Abrir http://localhost:8000
+
+# Acceso remoto (Tailscale, red local)
+./run_web.sh --host 0.0.0.0
+
+# Puerto personalizado
+./run_web.sh --port 8080
 ```
 
 1. Pegar el job description en el panel izquierdo
@@ -60,9 +65,10 @@ Para probar sin API key: activar **Dry run** antes de generar.
 git clone <url-del-repo> && cd smart-cv-builder
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env          # agregar al menos una API key
+cp .env.example .env                                                    # agregar al menos una API key
 cp data/candidate_data.example.json data/candidate_data.json
 cp data/roles.example.json data/roles.json
+cp web/cv_templates/default.example.json web/cv_templates/default.json # requerido para el preview y las descargas
 ./run_web.sh
 ```
 
