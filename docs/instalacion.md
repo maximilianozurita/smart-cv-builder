@@ -2,15 +2,18 @@
 
 ## Requisitos previos
 
-- Python 3.10 o superior
+- Python 3.10 o superior (para instalación local)
+- Docker y Docker Compose (para instalación con contenedor)
 - Al menos una API key de un proveedor LLM soportado
-- **macOS**: Homebrew instalado
-- **Windows**: [GTK3 Runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) en el `PATH`
-- **Linux**: `apt`/`dnf` disponible
+- **macOS**: Homebrew instalado (para instalación local)
+- **Windows**: [GTK3 Runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) en el `PATH` (para instalación local)
+- **Linux**: `apt`/`dnf` disponible (para instalación local)
 
 ---
 
-## 1. Clonar el repositorio
+## Opción A: Instalación local
+
+### 1. Clonar el repositorio
 
 ```bash
 git clone <url-del-repo>
@@ -19,7 +22,7 @@ cd smart-cv-builder
 
 ---
 
-## 2. Crear y activar entorno virtual
+### 2. Crear y activar entorno virtual
 
 ```bash
 python3 -m venv .venv
@@ -29,7 +32,7 @@ source .venv/bin/activate   # Linux/macOS
 
 ---
 
-## 3. Instalar dependencias del sistema (WeasyPrint)
+### 3. Instalar dependencias del sistema (WeasyPrint)
 
 WeasyPrint requiere librerías nativas para generar PDFs:
 
@@ -52,7 +55,7 @@ sudo dnf install pango cairo gdk-pixbuf2
 
 ---
 
-## 4. Instalar dependencias de Python
+### 4. Instalar dependencias de Python
 
 ```bash
 pip install -r requirements.txt
@@ -60,7 +63,7 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Configurar variables de entorno
+### 5. Configurar variables de entorno
 
 ```bash
 cp .env.example .env
@@ -76,7 +79,7 @@ GEMINI_API_KEY=tu_key_aqui
 # XAI_API_KEY=
 ```
 
-### Dónde obtener las API keys
+#### Dónde obtener las API keys
 
 | Provider | URL | Costo |
 |---|---|---|
@@ -90,7 +93,7 @@ GEMINI_API_KEY=tu_key_aqui
 
 ---
 
-## 6. Configurar datos del candidato
+### 6. Configurar datos del candidato
 
 ```bash
 cp data/candidate_data.example.json data/candidate_data.json
@@ -100,19 +103,18 @@ Editar `data/candidate_data.json` con los datos reales. Campos principales:
 
 | Campo | Descripción |
 |---|---|
-| `personal_info` | Nombre, email, teléfono, LinkedIn, ubicación |
+| `personal_info` | Nombre, email, teléfono, LinkedIn, ubicación y GitHub (opcional) |
 | `summary_base` | Párrafo base del candidato (el LLM lo adapta al JD) |
 | `technical_skills` | Dict de categoría → lista de skills |
 | `experience` | Historial completo con responsabilidades, logros y tecnologías |
 | `education` | Instituciones, títulos, años |
 | `languages` | Idiomas con nivel |
-| `certifications` | Opcional |
 
 > Incluir la mayor cantidad de detalle posible en `experience.responsibilities` y `experience.achievements` — el LLM selecciona y adapta lo más relevante para cada JD.
 
 ---
 
-## 7. Configurar roles
+### 7. Configurar roles
 
 ```bash
 cp data/roles.example.json data/roles.json
@@ -124,7 +126,7 @@ Para agregar un nuevo rol: editar `data/roles.json` con la misma estructura que 
 
 ---
 
-## 8. Copiar el template de CV por defecto
+### 8. Copiar el template de CV por defecto
 
 ```bash
 cp web/cv_templates/default.example.json web/cv_templates/default.json
@@ -134,7 +136,7 @@ cp web/cv_templates/default.example.json web/cv_templates/default.json
 
 ---
 
-## 10. (Opcional) Agregar plantilla Word
+### 9. (Opcional) Agregar plantilla Word
 
 Colocar `templates/cv_template.docx` con los macros `{{MACRO}}` correspondientes. También se puede subir desde la interfaz: **Settings → Word Template**.
 
@@ -142,7 +144,7 @@ Ver la lista completa de macros disponibles en [docs/arquitectura.md](arquitectu
 
 ---
 
-## 11. Levantar la aplicación
+### 10. Levantar la aplicación
 
 **macOS / Linux:**
 ```bash
@@ -179,11 +181,57 @@ Abrir en el navegador: **http://localhost:8000** (o la IP/hostname de Tailscale 
 
 ---
 
+## Opción B: Docker
+
+La imagen incluye Python 3.10-slim con todas las librerías de sistema para WeasyPrint preinstaladas. Los datos personales, templates y output se montan como volúmenes para que persistan entre reinicios del contenedor.
+
+### 1. Clonar el repositorio y preparar los archivos de datos
+
+```bash
+git clone <url-del-repo>
+cd smart-cv-builder
+cp .env.example .env                                                    # agregar API keys
+cp data/candidate_data.example.json data/candidate_data.json
+cp data/roles.example.json data/roles.json
+cp web/cv_templates/default.example.json web/cv_templates/default.json
+```
+
+### 2. Levantar con Docker Compose
+
+```bash
+docker compose up
+```
+
+La app queda disponible en **http://localhost:8002** (el compose expone el puerto 8002 del host al 8000 del contenedor).
+
+Para correr en segundo plano:
+```bash
+docker compose up -d
+```
+
+Para detener:
+```bash
+docker compose down
+```
+
+### Volúmenes montados
+
+| Volumen local | Contenido |
+|---|---|
+| `./data` | `candidate_data.json` y `roles.json` |
+| `./web/cv_templates` | Templates guardados desde la UI |
+| `./output` | CVs generados (si se usa el CLI dentro del contenedor) |
+| `./templates` | Plantilla Word para exportación DOCX |
+
+> El archivo `.env` se lee via `env_file` en el compose. Las API keys nunca se copian dentro de la imagen.
+
+---
+
 ## Verificar que funciona
 
-1. Abrir `http://localhost:8000` — debe aparecer la interfaz con 3 paneles
+1. Abrir `http://localhost:8000` (local) o `http://localhost:8002` (Docker) — debe aparecer la interfaz con 3 paneles
 2. Activar **Dry run** en el panel izquierdo
-3. Escribir cualquier texto en **Job Description** y hacer clic en **✨ Generate CV**
+3. Escribir cualquier texto en **Job Description** y hacer clic en **Generate CV**
 4. El preview debe actualizarse con un CV de ejemplo sin llamar al LLM
 
 ---
@@ -194,4 +242,4 @@ Abrir en el navegador: **http://localhost:8000** (o la IP/hostname de Tailscale 
 python generate_cv.py --role backend_engineer --jd job_description.txt --provider groq
 ```
 
-Los CVs generados se guardan en `output/`.
+Los CVs generados se guardan en `output/`. El CLI produce DOCX y convierte a PDF usando LibreOffice en modo headless (debe estar instalado: `brew install --cask libreoffice` en macOS).

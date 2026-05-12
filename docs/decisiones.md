@@ -26,7 +26,7 @@
 
 **Por qué:** el CV ya se renderiza como HTML con Jinja2 y estilos CSS embebidos. WeasyPrint convierte ese mismo HTML en PDF sin necesidad de un proceso headless de browser (Puppeteer requiere Chromium). El output es "lo que ves en el preview es lo que se descarga", sin discrepancias.
 
-**Trade-off:** WeasyPrint requiere librerías nativas del sistema (Pango, Cairo, GDK-Pixbuf), lo que complica la instalación en algunos entornos. La documentación del README cubre todos los casos (macOS, Ubuntu, Fedora, Windows).
+**Trade-off:** WeasyPrint requiere librerías nativas del sistema (Pango, Cairo, GDK-Pixbuf), lo que complica la instalación en algunos entornos. El `Dockerfile` resuelve esto preinstalando todas las dependencias del sistema, eliminando el problema en despliegues con Docker.
 
 ---
 
@@ -96,3 +96,13 @@ Las capas son:
 **Decisión:** la cover letter se genera en la misma llamada al LLM que el CV, como campo `cover_letter` en el JSON de respuesta.
 
 **Por qué:** ahorra una llamada al LLM en el caso más común. El endpoint `/api/cover-letter` existe para regeneración independiente cuando el usuario quiere ajustar el tono sin re-generar el CV completo.
+
+---
+
+## Docker con volúmenes para datos personales
+
+**Decisión:** `Dockerfile` + `docker-compose.yml` con los directorios de datos personales montados como volúmenes en lugar de copiados en la imagen.
+
+**Por qué:** `candidate_data.json`, `roles.json`, los templates y las API keys (via `.env`) son datos personales que no deben incluirse en la imagen. Montarlos como volúmenes permite actualizar esos archivos sin reconstruir la imagen y garantiza que persisten al reiniciar el contenedor. La imagen solo contiene el código de la aplicación y las dependencias del sistema.
+
+**Puerto expuesto:** el compose mapea `8002:8000` (host:contenedor) para evitar conflictos con instancias locales que puedan estar corriendo en el 8000.

@@ -6,11 +6,11 @@ Herramienta con interfaz web para generar CVs en PDF y Word (.docx) adaptados a 
 
 | | |
 |---|---|
-| [⚙️ Arquitectura](docs/arquitectura.md) | Pipeline de generación, componentes, providers y templates |
-| [📁 Estructura](docs/estructura.md) | Árbol del proyecto, separación de capas y archivos gitignoreados |
-| [🚀 Instalación](docs/instalacion.md) | Requisitos y pasos completos para correr el proyecto |
-| [🔌 API](docs/api.md) | Endpoints, request/response y ejemplos |
-| [🧠 Decisiones técnicas](docs/decisiones.md) | Trade-offs y justificaciones de diseño |
+| [Arquitectura](docs/arquitectura.md) | Pipeline de generación, componentes, providers y templates |
+| [Estructura](docs/estructura.md) | Árbol del proyecto, separación de capas y archivos gitignoreados |
+| [Instalación](docs/instalacion.md) | Requisitos y pasos completos para correr el proyecto (local o Docker) |
+| [API](docs/api.md) | Endpoints, request/response y ejemplos |
+| [Decisiones técnicas](docs/decisiones.md) | Trade-offs y justificaciones de diseño |
 
 ---
 
@@ -33,11 +33,14 @@ El resultado se entrega como HTML interactivo (preview editable), PDF descargabl
 
 # Puerto personalizado
 ./run_web.sh --port 8080
+
+# Docker
+docker compose up
 ```
 
 1. Pegar el job description en el panel izquierdo
 2. Seleccionar rol y proveedor LLM
-3. Hacer clic en **✨ Generate CV**
+3. Hacer clic en **Generate CV**
 4. Ajustar el template en el panel central (fuente, colores, secciones)
 5. Descargar PDF o DOCX
 
@@ -56,6 +59,7 @@ Para probar sin API key: activar **Dry run** antes de generar.
 | Validación de datos | Pydantic v2 |
 | Frontend | Vanilla JS (ES modules), sin frameworks |
 | LLM providers | Groq, Gemini, OpenAI, Anthropic, xAI |
+| Contenedores | Docker + Docker Compose |
 
 ---
 
@@ -72,7 +76,7 @@ cp web/cv_templates/default.example.json web/cv_templates/default.json # requeri
 ./run_web.sh
 ```
 
-Para los requisitos del sistema (WeasyPrint), configuración de API keys y pasos detallados: ver [docs/instalacion.md](docs/instalacion.md).
+Para los requisitos del sistema (WeasyPrint), configuración de API keys, pasos detallados e instrucciones Docker: ver [docs/instalacion.md](docs/instalacion.md).
 
 ---
 
@@ -97,7 +101,9 @@ smart-cv-builder/
 │   ├── schemas/   # Modelos request/response de la API
 │   └── static/    # Frontend Vanilla JS
 ├── data/          # candidate_data.json + roles.json (gitignored)
-└── templates/     # cv_template.docx (gitignored, opcional)
+├── templates/     # cv_template.docx (gitignored, opcional)
+├── Dockerfile
+└── docker-compose.yml
 ```
 
 Árbol completo con anotaciones en [docs/estructura.md](docs/estructura.md).

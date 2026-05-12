@@ -103,10 +103,9 @@ GenerateRequest (job_description, role, provider, dry_run, template_id)
 
 | Dato | Origen | Procesado por LLM |
 |---|---|---|
-| `personal_info` (nombre, email, teléfono, LinkedIn, ubicación) | `candidate_data.json` | No — inyección directa |
+| `personal_info` (nombre, email, teléfono, LinkedIn, ubicación, GitHub) | `candidate_data.json` | No — inyección directa |
 | `education` | `candidate_data.json` | No — inyección directa |
 | `languages` | `candidate_data.json` | No — inyección directa |
-| `certifications` | `candidate_data.json` | No — inyección directa |
 | `profile` | LLM output | Sí — reescrito para el JD |
 | `skills` | LLM output | Sí — reagrupado y priorizado |
 | `experiences` (exactamente 2) | LLM output | Sí — selección + bullets adaptados |
@@ -215,6 +214,7 @@ La descarga DOCX usa `templates/cv_template.docx` con macros `{{MACRO}}`. El iny
 | `{{EMAIL}}` | Email |
 | `{{PHONE}}` | Teléfono |
 | `{{LINKEDIN}}` | URL de LinkedIn |
+| `{{GITHUB}}` | URL de GitHub (opcional, solo se incluye si está definido en `personal_info.github`) |
 | `{{PROFILE}}` | Párrafo de perfil (LLM) |
 | `{{SKILLS}}` | Skills en grupos (LLM) |
 | `{{EXPERIENCE_COMPANY_1}}` / `{{EXPERIENCE_COMPANY_2}}` | Empresa |
@@ -226,7 +226,8 @@ La descarga DOCX usa `templates/cv_template.docx` con macros `{{MACRO}}`. El iny
 | `{{EDUCATION_DEGREE_1}}` / `{{EDUCATION_DEGREE_2}}` | Título |
 | `{{EDUCATION_END_DATE_1}}` / `{{EDUCATION_END_DATE_2}}` | Año de graduación |
 | `{{LANGUAGES}}` | Idiomas |
-| `{{CERTIFICATIONS}}` | Certificaciones |
+
+> Los mismos macros están disponibles en el tema HTML (`classic.html.j2`) para el preview y la exportación PDF. El macro `GITHUB` se renderiza en la línea de contacto del header solo si el valor no es `null`.
 
 ---
 

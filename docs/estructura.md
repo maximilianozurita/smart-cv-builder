@@ -5,7 +5,10 @@ smart-cv-builder/
 │
 ├── generate_cv.py              # CLI alternativo a la interfaz web
 ├── run_web.sh                  # Script para levantar la app (activa venv, configura DYLD_LIBRARY_PATH en macOS)
-├── requirements.txt
+├── requirements.txt            # Dependencias Python completas (backend + providers)
+├── Dockerfile                  # Imagen Python 3.10-slim con libs de sistema para WeasyPrint
+├── docker-compose.yml          # Servicio app en puerto 8002, monta volúmenes para datos personales
+├── .dockerignore               # Excluye .venv, __pycache__, .env, output/, docs/
 ├── .env.example                # Variables de entorno disponibles (copiar a .env)
 ├── CLAUDE.md                   # Instrucciones para Claude Code
 │
@@ -24,7 +27,7 @@ smart-cv-builder/
 │   └── settings.py             # Singleton con todas las configuraciones y rutas. Lee .env.
 │
 ├── schemas/                    # Modelos Pydantic compartidos (no web-specific)
-│   ├── candidate.py            # CandidateData, PersonalInfo, Experience, Education, etc.
+│   ├── candidate.py            # CandidateData, PersonalInfo, Experience, Education, Language
 │   ├── llm_response.py         # LLMResponse, ExperienceLLM (estructura esperada del LLM)
 │   └── roles.py                # RoleContext (campos que guían al LLM para cada perfil)
 │
@@ -45,6 +48,7 @@ smart-cv-builder/
 └── web/                        # Todo lo relacionado con la app FastAPI
     ├── main.py                 # Punto de entrada: registra routers, sirve estáticos, /api/roles
     ├── dependencies.py         # Dependencias inyectables de FastAPI
+    ├── requirements.txt        # Dependencias solo del módulo web (subconjunto de requirements.txt raíz)
     │
     ├── routers/                # Un archivo por grupo de endpoints
     │   ├── generate.py         # POST /api/generate, /api/preview, /api/cover-letter
