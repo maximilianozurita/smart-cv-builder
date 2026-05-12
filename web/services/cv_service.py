@@ -99,6 +99,7 @@ def build_replacements(candidate: CandidateData, llm) -> Dict[str, Any]:
         "PHONE": pi.phone,
         "EMAIL": pi.email,
         "LINKEDIN": pi.linkedin,
+        "GITHUB": pi.github,
         "LANGUAGES": ", ".join(f"{l.language} ({l.level})" for l in candidate.languages),
         "PROFILE": llm.profile,
         "SKILLS": _format_skills(llm.skills),

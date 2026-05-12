@@ -192,7 +192,7 @@
     <h1 data-key="FULL_NAME">{{ replacements.get('FULL_NAME', '') }}</h1>
     <div class="contact-line" style="justify-content: {{ _h_justify }}">
       {%- set ns = namespace(first=true) %}
-      {%- for field in ['LOCATION', 'PHONE', 'EMAIL', 'LINKEDIN'] %}
+      {%- for field in ['LOCATION', 'PHONE', 'EMAIL', 'LINKEDIN', 'GITHUB'] %}
         {%- if replacements.get(field) %}
           {%- if not ns.first %}<span class="sep"> · </span>{%- endif %}
           <span data-key="{{ field }}">{{ replacements.get(field) }}</span>
@@ -296,7 +296,7 @@
   if (window.parent === window) return;
 
   var SINGLE_LINE = new Set([
-    'FULL_NAME','LOCATION','PHONE','EMAIL','LINKEDIN',
+    'FULL_NAME','LOCATION','PHONE','EMAIL','LINKEDIN','GITHUB',
     'EXPERIENCE_COMPANY_1','EXPERIENCE_COMPANY_2',
     'EXPERIENCE_ROLE_1','EXPERIENCE_ROLE_2',
     'EXPERIENCE_START_DATE_1','EXPERIENCE_END_DATE_1',

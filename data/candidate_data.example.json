@@ -4,7 +4,8 @@
 		"location": "Buenos Aires, Argentina",
 		"email": "jane.doe@email.com",
 		"phone": "+54 11 1234 5678",
-		"linkedin": "linkedin.com/in/janedoe"
+		"linkedin": "linkedin.com/in/janedoe",
+		"github": "github.com/janedoe"
 	},
 	"languages": [
 		{ "language": "English", "level": "B2" },

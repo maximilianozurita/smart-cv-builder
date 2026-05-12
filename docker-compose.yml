@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8002:8000"
+    env_file:
+      - .env
+    volumes:
+      # Personal data files (gitignored — must exist locally before running)
+      - ./data:/app/data
+      # CV templates (gitignored personal templates)
+      - ./web/cv_templates:/app/web/cv_templates
+      # Generated CV output
+      - ./output:/app/output
+      # Word template for DOCX export (persists across container restarts)
+      - ./templates:/app/templates
+    restart: unless-stopped

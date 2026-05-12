@@ -12,6 +12,7 @@ class PersonalInfo(BaseModel):
 	email: str
 	phone: str
 	linkedin: str
+	github: Optional[str] = None
 
 
 class Language(BaseModel):
