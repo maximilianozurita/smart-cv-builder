@@ -1,5 +1,7 @@
 # Environment / secrets
 .env
+.env.bak
+*.env.bak
 
 # Personal data (keep locally, do not commit)
 data/candidate_data.json
